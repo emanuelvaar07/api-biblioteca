@@ -1,0 +1,43 @@
+openapi: 3.0.0
+info:
+  title: API Biblioteca
+  version: 1.0.0
+  description: Documentación sencilla del proyecto de biblioteca.
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/login:
+    post:
+      summary: Iniciar sesión
+      responses:
+        '200': {description: Token generado}
+        '400': {description: Datos inválidos}
+        '401': {description: Correo o clave incorrectos}
+  /api/autores:
+    get:
+      summary: Consultar autores
+      responses: {'200': {description: Lista de autores}}
+    post:
+      summary: Crear autor
+      security: [{bearerAuth: []}]
+      responses: {'201': {description: Autor creado}, '400': {description: Datos faltantes}, '409': {description: Autor repetido}}
+  /api/autores/{id}:
+    put:
+      summary: Actualizar autor
+      security: [{bearerAuth: []}]
+      parameters: [{name: id, in: path, required: true, schema: {type: integer}}]
+      responses: {'200': {description: Autor actualizado}, '404': {description: Autor no encontrado}}
+    delete:
+      summary: Eliminar autor
+      security: [{bearerAuth: []}]
+      parameters: [{name: id, in: path, required: true, schema: {type: integer}}]
+      responses: {'200': {description: Autor eliminado}, '404': {description: Autor no encontrado}}
+  /api/prestamos/{id}/devolver:
+    put:
+      summary: Devolver préstamo usando una transacción
+      security: [{bearerAuth: []}]
+      parameters: [{name: id, in: path, required: true, schema: {type: integer}}]
+      responses: {'200': {description: Devolución registrada}, '401': {description: Falta token}, '404': {description: Préstamo no encontrado}}
+components:
+  securitySchemes:
+    bearerAuth: {type: http, scheme: bearer, bearerFormat: JWT}
