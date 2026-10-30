@@ -13,6 +13,21 @@ const manejadorErrores = require('./middleware/errorHandler');
 const app = express();
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.json({
+    mensaje: 'API Biblioteca activa y en línea',
+    documentacion: '/api-docs',
+    endpoints: [
+      'POST /api/login',
+      'GET /api/autores',
+      'POST /api/autores',
+      'PUT /api/autores/:id',
+      'DELETE /api/autores/:id',
+      'PUT /api/prestamos/:id/devolver'
+    ]
+  });
+});
+
 const revisarLogin = (req, res, next) => {
   const errores = validationResult(req);
   if (!errores.isEmpty()) return res.status(400).json({ errores: errores.array() });
@@ -26,8 +41,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(YAML.load(path.join(__dirn
 app.use(manejadorErrores);
 
 if (require.main === module) {
-  const puerto = process.env.PUERTO || 3000;
-  app.listen(puerto, () => console.log(`Servidor en http://localhost:${puerto}`));
+  const puerto = process.env.PORT || process.env.PUERTO || 3000;
+  app.listen(puerto, () => console.log(`Servidor en puerto ${puerto}`));
 }
 
 module.exports = app;
